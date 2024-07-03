@@ -2,8 +2,6 @@
 /src
 /types
 /nodemon.json
-/package-lock.json
-/package.json
 /tsconfig.json
 
 /public/.vscode
