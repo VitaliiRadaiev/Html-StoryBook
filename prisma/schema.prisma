@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model WorkSpaceModel {
+  id          String           @id @default(uuid())
+  title       String
+  scss        String?
+  js          String?
+  cdnJsLinks  LinkModel[]      @relation("JsLinks")
+  cdnCssLinks LinkModel[]      @relation("CssLinks")
+  files       FileModel[]
+  folders     FolderModel[]
+  components  ComponentModel[]
+  order       Int
+}
+
+model FolderModel {
+  id          String           @id @default(uuid())
+  title       String
+  workspaceId String?
+  workspace   WorkSpaceModel?  @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  folderId    String?     
+  folder      FolderModel?     @relation("FolderToFolder", fields: [folderId], references: [id], onDelete: Cascade)
+  folders     FolderModel[]    @relation("FolderToFolder")
+  components  ComponentModel[]
+  order       Int
+}
+
+model ComponentModel {
+  id          String          @id @default(uuid())
+  title       String
+  workspaceId String?
+  workspace   WorkSpaceModel? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  folderId    String?
+  folder      FolderModel?    @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  html        String?
+  scss        String?
+  js          String?
+  cdnJsLinks  LinkModel[]     @relation("JsLinks")
+  cdnCssLinks LinkModel[]     @relation("CssLinks")
+  files       FileModel[]
+  order       Int
+}
+
+model LinkModel {
+  id             String          @id @default(uuid())
+  url            String
+  componentJsId  String?
+  componentJs    ComponentModel? @relation("JsLinks", fields: [componentJsId], references: [id], onDelete: Cascade)
+  componentCssId String?
+  componentCss   ComponentModel? @relation("CssLinks", fields: [componentCssId], references: [id], onDelete: Cascade)
+  workspaceJsId  String?
+  workspaceJs    WorkSpaceModel? @relation("JsLinks", fields: [workspaceJsId], references: [id], onDelete: Cascade)
+  workspaceCssId String?
+  workspaceCss   WorkSpaceModel? @relation("CssLinks", fields: [workspaceCssId], references: [id], onDelete: Cascade)
+}
+
+model FileModel {
+  id          String          @id @default(uuid())
+  url         String
+  type        String
+  componentId String?
+  component   ComponentModel? @relation(fields: [componentId], references: [id], onDelete: Cascade)
+  workspaceId String?
+  workspace   WorkSpaceModel? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+}

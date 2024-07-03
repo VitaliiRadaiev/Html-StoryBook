@@ -1,0 +1,15 @@
+/node_modules
+/src
+/types
+/nodemon.json
+/package-lock.json
+/package.json
+/tsconfig.json
+
+/public/.vscode
+/public/node_modules
+/public/src
+/public/package-lock.json
+/public/package.json
+/public/README.md 
+/public/tsconfig.json
