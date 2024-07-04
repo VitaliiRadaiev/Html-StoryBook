@@ -3,10 +3,12 @@
 /types
 /nodemon.json
 /tsconfig.json
+/prisma
 
 /public/.vscode
 /public/node_modules
 /public/src
+/public/files
 /public/package-lock.json
 /public/package.json
 /public/README.md 
