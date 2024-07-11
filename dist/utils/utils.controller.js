@@ -54,11 +54,9 @@ let UtilsController = class UtilsController extends base_controller_1.BaseContro
                             findFileUrl(url) {
                                 return __awaiter(this, void 0, void 0, function* () {
                                     if (url.startsWith('~')) {
-                                        console.log(new URL((0, url_1.pathToFileURL)(url.substring(1))));
                                         return new URL((0, url_1.pathToFileURL)('node_modules/' + url.substring(1)));
                                     }
                                     else if (url.startsWith('_public')) {
-                                        console.log(new URL((0, url_1.pathToFileURL)(url.substring(1))));
                                         return new URL((0, url_1.pathToFileURL)(url.substring(1)));
                                     }
                                     else {
