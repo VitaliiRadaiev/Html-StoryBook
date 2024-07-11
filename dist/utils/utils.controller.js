@@ -48,7 +48,14 @@ let UtilsController = class UtilsController extends base_controller_1.BaseContro
         return __awaiter(this, arguments, void 0, function* ({ body }, res, next) {
             try {
                 let sassString = body.sass || '';
-                sassString = sassString.replace(/http:\/\/localhost:8001/g, '_public');
+                function replaceImportUrls(cssText, oldUrl, newUrl) {
+                    return cssText.replace(/@import\s+["'](http:\/\/localhost:8001[^"']+)["']/g, (match, p1) => {
+                        return match.replace(oldUrl, newUrl);
+                    });
+                }
+                const oldUrl = 'http://localhost:8001';
+                const newUrl = '_public';
+                sassString = replaceImportUrls(sassString, oldUrl, newUrl);
                 const result = yield sass_1.default.compileStringAsync(sassString, {
                     importers: [{
                             findFileUrl(url) {
