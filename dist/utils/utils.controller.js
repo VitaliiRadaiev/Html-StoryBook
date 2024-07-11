@@ -29,6 +29,7 @@ const validateProperties_middleware_1 = require("../common/validateProperties.mi
 const sass_1 = __importDefault(require("sass"));
 const postcss_1 = __importDefault(require("postcss"));
 const autoprefixer_1 = __importDefault(require("autoprefixer"));
+const url_1 = require("url");
 let UtilsController = class UtilsController extends base_controller_1.BaseController {
     constructor() {
         super();
@@ -46,7 +47,26 @@ let UtilsController = class UtilsController extends base_controller_1.BaseContro
     convertSass(_a, res_1, next_1) {
         return __awaiter(this, arguments, void 0, function* ({ body }, res, next) {
             try {
-                const result = sass_1.default.compileString(body.sass || '');
+                let sassString = body.sass || '';
+                sassString = sassString.replace(/http:\/\/localhost:8001/g, '_public');
+                const result = yield sass_1.default.compileStringAsync(sassString, {
+                    importers: [{
+                            findFileUrl(url) {
+                                return __awaiter(this, void 0, void 0, function* () {
+                                    if (url.startsWith('~')) {
+                                        return new URL((0, url_1.pathToFileURL)('node_modules/' + url.substring(1)));
+                                    }
+                                    else if (url.startsWith('_public')) {
+                                        console.log(new URL((0, url_1.pathToFileURL)(url.substring(1))));
+                                        return new URL((0, url_1.pathToFileURL)(url.substring(1)));
+                                    }
+                                    else {
+                                        return null;
+                                    }
+                                });
+                            },
+                        }]
+                });
                 const prefixedCSS = yield (0, postcss_1.default)([(0, autoprefixer_1.default)({
                         overrideBrowserslist: ['> 1%', 'last 2 versions', 'not dead']
                     })]).process(result.css.toString(), {
