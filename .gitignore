@@ -3,6 +3,7 @@
 /types
 /nodemon.json
 /tsconfig.json
+/prisma-comands.txt
 
 /public/.vscode
 /public/node_modules
