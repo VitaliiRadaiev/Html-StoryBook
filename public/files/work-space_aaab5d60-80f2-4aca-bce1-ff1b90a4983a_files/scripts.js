@@ -420,3 +420,64 @@ function initHandlerDocumentClick() {
 
     document.addEventListener('click', (e) => cbList.forEach(cb => cb(e)));
 }
+
+function createScrollContainer(htmlEl) {
+    const wrapper = document.createElement('div');
+    const slide = document.createElement('div');
+    const scrollbar = document.createElement('div');
+
+    wrapper.className = 'swiper-wrapper';
+    slide.className = 'swiper-slide';
+    scrollbar.className = 'swiper-scrollbar';
+
+    htmlEl?.classList.add('swiper');
+
+    slide.append(...htmlEl.children);
+    wrapper.append(slide);
+    htmlEl.append(wrapper, scrollbar);
+
+    const swiper = new Swiper(htmlEl, {
+        observe: true,
+        observeParents: true,
+        direction: "vertical",
+        slidesPerView: "auto",
+        freeMode: true,
+        scrollbar: {
+            el: scrollbar,
+        },
+        mousewheel: {
+            releaseOnEdges: htmlEl.getAttribute('data-scroll-container-behavior') === 'release',  
+        },
+    
+    });
+
+    htmlEl.swiper = swiper;
+
+    return swiper;
+}
+
+function initScrollContainers() {
+    const containers = document.querySelectorAll('[data-scroll-container]');
+    containers.forEach(container => {
+        const mode = container.getAttribute('data-scroll-container');
+        if (window.innerWidth < 1024 && mode === 'desk') return;
+        if (container.classList.contains('_initialized')) return;
+        createScrollContainer(container);
+        container.classList.add('_initialized');
+
+        const observer = new MutationObserver(_ => {
+            observer.disconnect();
+
+            if (window.innerWidth < 1024 && mode === 'desk') return;
+            createScrollContainer(container);
+
+            observer.observe(container, {
+                childList: true
+            });
+        });
+
+        observer.observe(container, {
+            childList: true
+        });
+    });
+}
